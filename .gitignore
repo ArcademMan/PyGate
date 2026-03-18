@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+../.venv/
+.idea/
+*.egg-info/
+dist/
+build/
+*.spec
+pygate.png
+pygate.ico
