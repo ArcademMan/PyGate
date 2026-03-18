@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="pygate.png" alt="PyGate" width="180">
+  <img src="./pygate.png" alt="PyGate" width="180">
 </p>
 
 <h1 align="center">PyGate</h1>
