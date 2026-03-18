@@ -110,12 +110,11 @@ def get_local_listeners() -> list[dict]:
     Returns:
         Lista di dict con chiavi: port, pid, process, service
     """
-    import subprocess
+    from shared.subprocess import run as _run
     import psutil
 
-    result = subprocess.run(
+    result = _run(
         ["netstat", "-ano", "-p", "TCP"],
-        capture_output=True, text=True, encoding="cp850",
     )
 
     listeners = []

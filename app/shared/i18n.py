@@ -16,8 +16,23 @@ Ogni tool registra la propria cartella locale con register_locale_dir().
 import json
 import locale
 import os
+import sys
 
-_SHARED_LOCALE_DIR = os.path.join(os.path.dirname(__file__), "locale")
+
+def _find_dir(*candidates):
+    """Restituisce la prima directory esistente tra i candidati."""
+    for d in candidates:
+        if os.path.isdir(d):
+            return d
+    return candidates[0]
+
+
+# In compilato sys.executable e' il .exe, __file__ potrebbe non essere valido
+_EXE_DIR = os.path.dirname(os.path.abspath(sys.executable if getattr(sys, 'frozen', False) else __file__))
+_SHARED_LOCALE_DIR = _find_dir(
+    os.path.join(os.path.dirname(__file__), "locale"),       # dev: shared/locale
+    os.path.join(_EXE_DIR, "shared", "locale"),              # compilato
+)
 _DEFAULT_LANG = "en"
 
 _current_lang: str = ""

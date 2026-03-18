@@ -1,7 +1,8 @@
 """Analisi reti WiFi su Windows."""
 
-import subprocess
 import re
+
+from shared.subprocess import run as _run
 
 
 def get_wifi_networks() -> list[dict]:
@@ -10,9 +11,8 @@ def get_wifi_networks() -> list[dict]:
     Returns:
         Lista di dict con chiavi: ssid, signal, channel, auth, encryption, bssid
     """
-    result = subprocess.run(
+    result = _run(
         ["netsh", "wlan", "show", "networks", "mode=bssid"],
-        capture_output=True, text=True, encoding="cp850",
     )
 
     networks = []
@@ -74,9 +74,8 @@ def get_current_wifi() -> dict | None:
         dict con chiavi: ssid, bssid, signal, channel, speed, auth
         oppure None se non connesso al WiFi
     """
-    result = subprocess.run(
+    result = _run(
         ["netsh", "wlan", "show", "interfaces"],
-        capture_output=True, text=True, encoding="cp850",
     )
 
     info = {}

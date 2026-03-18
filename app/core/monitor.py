@@ -1,7 +1,5 @@
 """Monitor connessioni di rete attive."""
 
-import subprocess
-
 import psutil
 
 from core.portscan import COMMON_PORTS

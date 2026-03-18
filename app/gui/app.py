@@ -127,9 +127,13 @@ class PyGateApp(ToolWindow):
 
         # Icona finestra
         from PySide6.QtGui import QIcon
-        icon_path = os.path.join(os.path.dirname(__file__), "..", "..", "pygate.png")
-        if os.path.exists(icon_path):
-            self.setWindowIcon(QIcon(icon_path))
+        for icon_candidate in [
+            os.path.join(os.path.dirname(__file__), "..", "..", "pygate.png"),  # dev
+            os.path.join(os.path.dirname(sys.executable), "pygate.png"),       # compilato
+        ]:
+            if os.path.exists(icon_candidate):
+                self.setWindowIcon(QIcon(icon_candidate))
+                break
 
         # Segnali thread -> GUI
         self._signals = _Signals()

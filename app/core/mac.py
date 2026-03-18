@@ -2,14 +2,13 @@
 
 import random
 import re
-import subprocess
+from shared.subprocess import run as _run
 
 
 def get_mac(interface: str) -> str | None:
     """Restituisce il MAC address attuale di un'interfaccia."""
-    result = subprocess.run(
+    result = _run(
         ["getmac", "/v", "/fo", "csv"],
-        capture_output=True, text=True, encoding="cp850",
     )
 
     for line in result.stdout.splitlines():
@@ -134,9 +133,8 @@ def reset_mac(interface: str) -> tuple[bool, str]:
 
 def _restart_interface(interface: str) -> tuple[bool, str]:
     """Disabilita e riabilita un'interfaccia di rete."""
-    r1 = subprocess.run(
+    r1 = _run(
         ["netsh", "interface", "set", "interface", interface, "disable"],
-        capture_output=True, text=True, encoding="cp850",
     )
     if r1.returncode != 0:
         return False, r1.stderr.strip() or r1.stdout.strip()
@@ -144,9 +142,8 @@ def _restart_interface(interface: str) -> tuple[bool, str]:
     import time
     time.sleep(2)
 
-    r2 = subprocess.run(
+    r2 = _run(
         ["netsh", "interface", "set", "interface", interface, "enable"],
-        capture_output=True, text=True, encoding="cp850",
     )
     if r2.returncode != 0:
         return False, r2.stderr.strip() or r2.stdout.strip()

@@ -1,7 +1,7 @@
 """Gestione DNS su Windows via netsh."""
 
 import ctypes
-import subprocess
+from shared.subprocess import run as _run
 
 
 def is_admin() -> bool:
@@ -18,9 +18,8 @@ def get_dns(interface: str) -> list[str]:
     Returns:
         Lista di IP DNS (vuota se DHCP/automatico).
     """
-    result = subprocess.run(
+    result = _run(
         ["netsh", "interface", "ip", "show", "dns", interface],
-        capture_output=True, text=True, encoding="cp850",
     )
 
     servers = []
@@ -37,9 +36,8 @@ def get_dns(interface: str) -> list[str]:
 
 def is_dhcp(interface: str) -> bool:
     """Controlla se il DNS dell'interfaccia e' configurato via DHCP."""
-    result = subprocess.run(
+    result = _run(
         ["netsh", "interface", "ip", "show", "dns", interface],
-        capture_output=True, text=True, encoding="cp850",
     )
     text = result.stdout.lower()
     return "dhcp" in text or "automaticamente" in text or "automatically" in text
@@ -60,18 +58,16 @@ def set_dns(interface: str, primary: str, secondary: str | None = None) -> tuple
         return False, f"Invalid secondary DNS: {secondary}"
 
     # Imposta DNS primario
-    result = subprocess.run(
+    result = _run(
         ["netsh", "interface", "ip", "set", "dns", interface, "static", primary],
-        capture_output=True, text=True, encoding="cp850",
     )
     if result.returncode != 0:
         return False, result.stderr.strip() or result.stdout.strip()
 
     # Imposta DNS secondario
     if secondary:
-        result = subprocess.run(
+        result = _run(
             ["netsh", "interface", "ip", "add", "dns", interface, secondary, "index=2"],
-            capture_output=True, text=True, encoding="cp850",
         )
         if result.returncode != 0:
             return False, result.stderr.strip() or result.stdout.strip()
@@ -85,9 +81,8 @@ def reset_dns(interface: str) -> tuple[bool, str]:
     Returns:
         (successo, messaggio)
     """
-    result = subprocess.run(
+    result = _run(
         ["netsh", "interface", "ip", "set", "dns", interface, "dhcp"],
-        capture_output=True, text=True, encoding="cp850",
     )
     if result.returncode != 0:
         return False, result.stderr.strip() or result.stdout.strip()
@@ -100,9 +95,8 @@ def flush_cache() -> tuple[bool, str]:
     Returns:
         (successo, messaggio)
     """
-    result = subprocess.run(
+    result = _run(
         ["ipconfig", "/flushdns"],
-        capture_output=True, text=True, encoding="cp850",
     )
     if result.returncode != 0:
         return False, result.stderr.strip() or result.stdout.strip()

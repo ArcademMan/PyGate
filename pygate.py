@@ -3,12 +3,20 @@
 import os
 import sys
 
+_ROOT = os.path.dirname(os.path.abspath(__file__))
+_APP = os.path.join(_ROOT, "app")
+
 # Aggiungi la cartella app/ al path
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "app"))
+if os.path.isdir(_APP):
+    sys.path.insert(0, _APP)
 
 from shared.i18n import register_locale_dir
 
-register_locale_dir("pygate", os.path.join(os.path.dirname(os.path.abspath(__file__)), "app", "locale"))
+# Registra locale: cerca in app/locale (dev) o locale/ (compilato)
+for candidate in [os.path.join(_APP, "locale"), os.path.join(_ROOT, "locale")]:
+    if os.path.isdir(candidate):
+        register_locale_dir("pygate", candidate)
+        break
 
 
 def main():

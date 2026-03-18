@@ -1,6 +1,6 @@
 """Rilevamento interfacce di rete Windows."""
 
-import subprocess
+from shared.subprocess import run as _run
 
 
 def list_interfaces() -> list[dict]:
@@ -9,9 +9,8 @@ def list_interfaces() -> list[dict]:
     Returns:
         Lista di dict con chiavi: admin_state, status, type, name
     """
-    result = subprocess.run(
+    result = _run(
         ["netsh", "interface", "show", "interface"],
-        capture_output=True, text=True, encoding="cp850",
     )
 
     lines = result.stdout.strip().splitlines()

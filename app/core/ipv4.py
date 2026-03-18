@@ -1,7 +1,7 @@
 """Gestione indirizzo IPv4 su Windows via netsh."""
 
 import re
-import subprocess
+from shared.subprocess import run as _run
 
 
 def get_ipv4_config(interface: str) -> dict:
@@ -10,9 +10,8 @@ def get_ipv4_config(interface: str) -> dict:
     Returns:
         dict con chiavi: ip, subnet, gateway, dhcp
     """
-    result = subprocess.run(
+    result = _run(
         ["netsh", "interface", "ip", "show", "config", interface],
-        capture_output=True, text=True, encoding="cp850",
     )
 
     config = {"ip": "", "subnet": "", "gateway": "", "dhcp": False}
@@ -72,10 +71,9 @@ def set_static_ip(interface: str, ip: str, subnet: str, gateway: str) -> tuple[b
         if not is_valid_ipv4(val):
             return False, f"Invalid {label}: {val}"
 
-    result = subprocess.run(
+    result = _run(
         ["netsh", "interface", "ip", "set", "address",
          interface, "static", ip, subnet, gateway],
-        capture_output=True, text=True, encoding="cp850",
     )
     if result.returncode != 0:
         return False, result.stderr.strip() or result.stdout.strip()
@@ -88,9 +86,8 @@ def set_dhcp(interface: str) -> tuple[bool, str]:
     Returns:
         (successo, messaggio)
     """
-    result = subprocess.run(
+    result = _run(
         ["netsh", "interface", "ip", "set", "address", interface, "dhcp"],
-        capture_output=True, text=True, encoding="cp850",
     )
     if result.returncode != 0:
         return False, result.stderr.strip() or result.stdout.strip()

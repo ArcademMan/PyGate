@@ -1,7 +1,7 @@
 """Parsing e gestione della cache DNS di Windows."""
 
 import re
-import subprocess
+from shared.subprocess import run as _run
 
 
 def get_dns_cache() -> list[dict]:
@@ -10,9 +10,8 @@ def get_dns_cache() -> list[dict]:
     Returns:
         Lista di dict con chiavi: name, type, ttl, data
     """
-    result = subprocess.run(
+    result = _run(
         ["ipconfig", "/displaydns"],
-        capture_output=True, text=True, encoding="cp850",
     )
 
     entries = []
