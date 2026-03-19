@@ -6,7 +6,7 @@ Salva le preferenze in un file JSON nella cartella utente.
 import json
 import os
 
-_CONFIG_DIR = os.path.join(os.path.expanduser("~"), ".ammstools")
+_CONFIG_DIR = os.path.join(os.environ.get("APPDATA", os.path.expanduser("~")), "AmMstools")
 _CONFIG_FILE = os.path.join(_CONFIG_DIR, "config.json")
 
 
